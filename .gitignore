@@ -1,0 +1,5 @@
+g1_spinkick.csv
+wandb/
+__pycache__/
+logs/
+*.npz
