@@ -5,7 +5,7 @@
 An example of building on top of [mjlab](https://github.com/mujocolab/mjlab) to teach a Unitree G1 humanoid to perform a **double spin kick**. The reference motion comes from Jason Peng's [MimicKit](https://github.com/xbpeng/MimicKit).
 
 **This repository provides:**
-- Data conversion script (MimicKit pkl → mjlab csv) with safe pose transitions and motion looping
+- Data conversion script (MimicKit pkl → mjlab csv)
 - Full training results and hyperparameters
 - Pretrained ONNX checkpoint for deployment
 - Deployment instructions for real hardware

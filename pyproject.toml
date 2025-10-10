@@ -1,9 +1,14 @@
 [project]
 name = "g1-spinkick-example"
 version = "0.1.0"
-description = "Add your description here"
-readme = "README.md"
-requires-python = ">=3.13"
+license = "Apache-2.0"
+license-files = ["LICENSE"]
+description = "Train a Unitree G1 humanoid to perform a double spin kick using mjlab"
+readme = { file = "README.md", content-type = "text/markdown" }
+authors = [
+    {name = "The MjLab Developers"},
+]
+requires-python = ">=3.10,<3.14"
 dependencies = [
     "mjlab",
     "ruff>=0.14.0",
@@ -13,12 +18,8 @@ dependencies = [
 mjlab = { path = "../mjlab", editable = true }
 
 [tool.ruff]
-src = ["src"]  # Helpful for recognizing first-party imports.
 indent-width = 2
-exclude = [
-  "src/mjlab/third_party",
-  "typings",
-]
+src = ["spinkick_example"]
 
 [tool.ruff.lint]
 select = ["E4", "E7", "E9", "F", "I", "B"]
