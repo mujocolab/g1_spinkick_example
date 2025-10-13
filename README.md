@@ -87,7 +87,7 @@ Once you have your run path, evaluate the policy with:
 
 ```bash
 uv run play.py \
-    --task Mjlab-Spinkick-Unitree-G1-Play \
+    Mjlab-Spinkick-Unitree-G1-Play \
     --wandb-run-path {wandb-run-path} \
     --num-envs 8 \
     --render-all-envs
