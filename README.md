@@ -79,13 +79,18 @@ MUJOCO_GL=egl CUDA_VISIBLE_DEVICES=0 uv run train.py \
 
 For full training details and reproducibility, see the [wandb report](https://api.wandb.ai/links/gcbc_researchers/nfi58457).
 
-To evaluate your policy, copy the run path from the overview page for your run on wandb and run this command:
+## Evaluation
+
+To evaluate your trained policy, you'll need your wandb run path. You can find this in the run overview. It follows the format `{your-organization}/{project-name}/{run-id}`, where `run-id` is a unique 8-character identifier.
+
+Once you have your run path, evaluate the policy with:
 
 ```bash
 uv run play.py \
-    Mjlab-Spinkick-Unitree-G1-Play \
-    --wandb-run-path {run path} \
-    --num-envs 8
+    --task Mjlab-Spinkick-Unitree-G1-Play \
+    --wandb-run-path {wandb-run-path} \
+    --num-envs 8 \
+    --render-all-envs
 ```
 
 ## Deployment
