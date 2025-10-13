@@ -33,3 +33,22 @@ class SpinkickTerminationsCfg(TerminationsCfg):
 @dataclass
 class G1SpinkickCfg(G1FlatNoStateEstimationEnvCfg):
   terminations: SpinkickTerminationsCfg = field(default_factory=SpinkickTerminationsCfg)
+
+
+@dataclass
+class G1SpinkickCfg_PLAY(G1SpinkickCfg):
+  def __post_init__(self):
+    super().__post_init__()
+
+    self.observations.policy.enable_corruption = False
+    self.events.push_robot = None
+
+    # Disable RSI randomization.
+    self.commands.motion.pose_range = {}
+    self.commands.motion.velocity_range = {}
+
+    # Disable adaptive sampling to play through motion from start to finish.
+    self.commands.motion.disable_adaptive_sampling = True
+
+    # Effectively infinite episode length.
+    self.episode_length_s = int(1e9)

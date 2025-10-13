@@ -79,6 +79,15 @@ MUJOCO_GL=egl CUDA_VISIBLE_DEVICES=0 uv run train.py \
 
 For full training details and reproducibility, see the [wandb report](https://api.wandb.ai/links/gcbc_researchers/nfi58457).
 
+To evaluate your policy, copy the run path from the overview page for your run on wandb and run this command:
+
+```bash
+uv run play.py \
+    Mjlab-Spinkick-Unitree-G1-Play \
+    --wandb-run-path {run path} \
+    --num-envs 8
+```
+
 ## Deployment
 
 We use [motion_tracking_controller](https://github.com/HybridRobotics/motion_tracking_controller) to deploy the trained policy. An ONNX file is provided for convenience, though one will also be generated in your wandb artifacts. Download it and follow the instructions in the motion_tracking_controller repo.
