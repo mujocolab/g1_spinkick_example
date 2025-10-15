@@ -96,3 +96,34 @@ uv run play.py \
 ## Deployment
 
 We use [motion_tracking_controller](https://github.com/HybridRobotics/motion_tracking_controller) to deploy the trained policy. An ONNX file is provided for convenience, though one will also be generated in your wandb artifacts. Download it and follow the instructions in the motion_tracking_controller repo.
+
+### Alternative Implementation
+
+An alternative option is available through [**RoboJuDo**](https://github.com/HansZ8/RoboJuDo), a lightweight deployment framework designed for **onboard execution** and flexible modular integration.
+
+RoboJuDo supports this mjlab example via the `BeyondmimicPolicy`, allowing direct use of the provided configuration.  
+
+<details>
+  <summary>A minimal configuration setup is shown below:</summary>
+
+1. **Download** the ONNX model and place it in `assets/models/g1/beyondmimic`.
+
+2. **Edit** the `g1_beyondmimic` config in `robojudo/config/g1/g1_cfg.py` to set policy name:
+
+```python
+@cfg_registry.register
+class g1_beyondmimic(RlPipelineCfg):
+    robot: str = "g1"
+    env: G1MujocoEnvCfg = G1MujocoEnvCfg()
+    ctrl: list[KeyboardCtrlCfg] = [KeyboardCtrlCfg()]
+
+    policy: G1BeyondMimicPolicyCfg = G1BeyondMimicPolicyCfg(
+        policy_name="spinkick_safe",
+        max_timestep=183,
+    )
+```
+
+3. For **real robot deployment**, you may use the `g1_locomimic_beyondmimic` or `g1_locomimic_beyondmimic_real` config
+   in `robojudo/config/g1/g1_loco_mimic_cfg.py`, which includes smooth locomotion interpolation.
+
+</details>
