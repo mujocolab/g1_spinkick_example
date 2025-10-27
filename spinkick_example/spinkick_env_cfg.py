@@ -34,6 +34,11 @@ class SpinkickTerminationsCfg(TerminationsCfg):
 class G1SpinkickCfg(G1FlatNoStateEstimationEnvCfg):
   terminations: SpinkickTerminationsCfg = field(default_factory=SpinkickTerminationsCfg)
 
+  def __post_init__(self):
+    super().__post_init__()
+
+    self.rewards.joint_limit.weight = -100.0
+
 
 @dataclass
 class G1SpinkickCfg_PLAY(G1SpinkickCfg):
