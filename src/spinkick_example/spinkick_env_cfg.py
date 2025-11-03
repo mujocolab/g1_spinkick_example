@@ -53,7 +53,7 @@ class G1SpinkickCfg_PLAY(G1SpinkickCfg):
     self.commands.motion.velocity_range = {}
 
     # Disable adaptive sampling to play through motion from start to finish.
-    self.commands.motion.disable_adaptive_sampling = True
+    self.commands.motion.sampling_mode = "start"
 
     # Effectively infinite episode length.
     self.episode_length_s = int(1e9)

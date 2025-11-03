@@ -2,7 +2,9 @@
 
 ![Sim-to-real double spin kick comparison](assets/teaser.gif)
 
-An example of building on top of [mjlab](https://github.com/mujocolab/mjlab) to teach a Unitree G1 humanoid to perform a **double spin kick**. The reference motion comes from Jason Peng's [MimicKit](https://github.com/xbpeng/MimicKit).
+An example of building on top of [mjlab](https://github.com/mujocolab/mjlab) to
+teach a Unitree G1 humanoid to perform a **double spin kick**. The reference
+motion comes from Jason Peng's [MimicKit](https://github.com/xbpeng/MimicKit).
 
 **This repository provides:**
 - Data conversion script (MimicKit pkl → mjlab csv)
@@ -12,7 +14,10 @@ An example of building on top of [mjlab](https://github.com/mujocolab/mjlab) to 
 
 > ⚠️ **Disclaimer**
 >
-> This repository is provided as-is for educational purposes. We do not take any responsibility for damage to property or injury to persons that may occur from attempting to replicate the results shown here. Please exercise caution and good judgement when working with hardware.
+> This repository is provided as-is for educational purposes. We do not take any
+> responsibility for damage to property or injury to persons that may occur from
+> attempting to replicate the results shown here. Please exercise caution and
+> good judgement when working with hardware.
 
 ## Installation
 
@@ -37,9 +42,12 @@ uv add --editable ../mjlab
 
 ## Data Conversion
 
-Download the spin kick data using the link referenced in the MimicKit [installation instructions](https://github.com/xbpeng/MimicKit?tab=readme-ov-file#installation).
+Download the spin kick data using the link referenced in the MimicKit
+[installation instructions](https://github.com/xbpeng/MimicKit?tab=readme-ov-file#installation).
 
-The conversion script adds smooth transitions from a safe standing pose at the start and end of the motion to ensure safe deployment. Since the motion is cyclic, we also repeat it to reach the desired duration.
+The conversion script adds smooth transitions from a safe standing pose at the
+start and end of the motion to ensure safe deployment. Since the motion is
+cyclic, we also repeat it to reach the desired duration.
 
 ```bash
 # Convert pkl to csv
@@ -61,32 +69,38 @@ MUJOCO_GL=egl uv run -m mjlab.scripts.csv_to_npz \
     --render
 ```
 
-This will upload the motion to your wandb registry and create a video showing the reference motion like the one below:
+This will upload the motion to your wandb registry and create a video showing
+the reference motion like the one below:
 
 ![spinkick reference](assets/motion.gif)
 
 ## Training
 
-Follow the registry creation instructions in the mjlab [README](https://github.com/mujocolab/mjlab?tab=readme-ov-file#2-motion-imitation).
+Follow the registry creation instructions in the mjlab
+[README](https://github.com/mujocolab/mjlab?tab=readme-ov-file#2-motion-imitation).
 
 ```bash
-MUJOCO_GL=egl CUDA_VISIBLE_DEVICES=0 uv run train.py \
+MUJOCO_GL=egl CUDA_VISIBLE_DEVICES=0 uv run train \
     Mjlab-Spinkick-Unitree-G1 \
     --registry-name {your-organization}/{registry-name}/mimickit_spinkick_safe \
     --env.scene.num-envs 4096 \
     --agent.max-iterations 20_000
 ```
 
-For full training details and reproducibility, see the [wandb report](https://api.wandb.ai/links/gcbc_researchers/nfi58457).
+For full training details and reproducibility, see the
+[wandb report](https://api.wandb.ai/links/gcbc_researchers/nfi58457).
 
 ## Evaluation
 
-To evaluate your trained policy, you'll need your wandb run path. You can find this in the run overview. It follows the format `{your-organization}/{project-name}/{run-id}`, where `run-id` is a unique 8-character identifier.
+To evaluate your trained policy, you'll need your wandb run path. You can find
+this in the run overview. It follows the format
+`{your-organization}/{project-name}/{run-id}`, where `run-id` is a unique
+8-character identifier.
 
 Once you have your run path, evaluate the policy with:
 
 ```bash
-uv run play.py \
+uv run play \
     Mjlab-Spinkick-Unitree-G1-Play \
     --wandb-run-path {wandb-run-path} \
     --num-envs 8
@@ -94,20 +108,28 @@ uv run play.py \
 
 ## Deployment
 
-We use [motion_tracking_controller](https://github.com/HybridRobotics/motion_tracking_controller) to deploy the trained policy. An ONNX file is provided for convenience, though one will also be generated in your wandb artifacts. Download it and follow the instructions in the motion_tracking_controller repo.
+We use
+[motion_tracking_controller](https://github.com/HybridRobotics/motion_tracking_controller)
+to deploy the trained policy. An ONNX file is provided for convenience, though
+one will also be generated in your wandb artifacts. Download it and follow the
+instructions in the motion_tracking_controller repo.
 
 ### Alternative Implementation
 
-An alternative option is available through [**RoboJuDo**](https://github.com/HansZ8/RoboJuDo), a lightweight deployment framework designed for **onboard execution** and flexible modular integration.
+An alternative option is available through
+[**RoboJuDo**](https://github.com/HansZ8/RoboJuDo), a lightweight deployment
+framework designed for **onboard execution** and flexible modular integration.
 
-RoboJuDo supports this mjlab example via the `BeyondmimicPolicy`, allowing direct use of the provided configuration.  
+RoboJuDo supports this mjlab example via the `BeyondmimicPolicy`, allowing
+direct use of the provided configuration.  
 
 <details>
   <summary>A minimal configuration setup is shown below:</summary>
 
 1. **Download** the ONNX model and place it in `assets/models/g1/beyondmimic`.
 
-2. **Edit** the `g1_beyondmimic` config in `robojudo/config/g1/g1_cfg.py` to set policy name:
+2. **Edit** the `g1_beyondmimic` config in `robojudo/config/g1/g1_cfg.py` to set
+   policy name:
 
 ```python
 @cfg_registry.register
@@ -122,7 +144,9 @@ class g1_beyondmimic(RlPipelineCfg):
     )
 ```
 
-3. For **real robot deployment**, you may use the `g1_locomimic_beyondmimic` or `g1_locomimic_beyondmimic_real` config
-   in `robojudo/config/g1/g1_loco_mimic_cfg.py`, which includes smooth locomotion interpolation.
+3. For **real robot deployment**, you may use the `g1_locomimic_beyondmimic` or
+   `g1_locomimic_beyondmimic_real` config in
+   `robojudo/config/g1/g1_loco_mimic_cfg.py`, which includes smooth locomotion
+   interpolation.
 
 </details>
