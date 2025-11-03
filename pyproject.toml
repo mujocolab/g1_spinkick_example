@@ -1,5 +1,9 @@
+[build-system]
+requires = ["uv_build>=0.8.19,<0.9.0"]
+build-backend = "uv_build"
+
 [project]
-name = "g1-spinkick-example"
+name = "spinkick-example"
 version = "0.1.0"
 license = "Apache-2.0"
 license-files = ["LICENSE"]
@@ -16,6 +20,7 @@ dependencies = [
 
 [tool.uv.sources]
 mjlab = { path = "../mjlab", editable = true }
+mujoco-warp = { git = "https://github.com/google-deepmind/mujoco_warp", rev = "e605c406363805d949b75d50dd5ffb3d79bc3f70"}
 
 [tool.ruff]
 indent-width = 2
@@ -23,3 +28,6 @@ src = ["spinkick_example"]
 
 [tool.ruff.lint]
 select = ["E4", "E7", "E9", "F", "I", "B"]
+
+[project.entry-points."mjlab.tasks"]
+  g1_spinkick = "spinkick_example"
