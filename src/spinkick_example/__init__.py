@@ -1,21 +1,15 @@
-import gymnasium as gym
+from mjlab.tasks.registry import register_mjlab_task
+from mjlab.tasks.tracking.rl import MotionTrackingOnPolicyRunner
 
-gym.register(
-  id="Mjlab-Spinkick-Unitree-G1",
-  entry_point="mjlab.envs:ManagerBasedRlEnv",
-  disable_env_checker=True,
-  kwargs={
-    "env_cfg_entry_point": f"{__name__}.spinkick_env_cfg:G1SpinkickCfg",
-    "rl_cfg_entry_point": "mjlab.tasks.tracking.config.g1.rl_cfg:G1FlatPPORunnerCfg",
-  },
+from .spinkick_env_cfg import (
+  unitree_g1_spinkick_env_cfg,
+  unitree_g1_spinkick_runner_cfg,
 )
 
-gym.register(
-  id="Mjlab-Spinkick-Unitree-G1-Play",
-  entry_point="mjlab.envs:ManagerBasedRlEnv",
-  disable_env_checker=True,
-  kwargs={
-    "env_cfg_entry_point": f"{__name__}.spinkick_env_cfg:G1SpinkickCfg_PLAY",
-    "rl_cfg_entry_point": "mjlab.tasks.tracking.config.g1.rl_cfg:G1FlatPPORunnerCfg",
-  },
+register_mjlab_task(
+  task_id="Mjlab-Spinkick-Unitree-G1",
+  env_cfg=unitree_g1_spinkick_env_cfg(),
+  play_env_cfg=unitree_g1_spinkick_env_cfg(play=True),
+  rl_cfg=unitree_g1_spinkick_runner_cfg(),
+  runner_cls=MotionTrackingOnPolicyRunner,
 )
