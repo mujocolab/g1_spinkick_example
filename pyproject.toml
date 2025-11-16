@@ -29,5 +29,11 @@ src = ["spinkick_example"]
 [tool.ruff.lint]
 select = ["E4", "E7", "E9", "F", "I", "B"]
 
+[dependency-groups]
+dev = [
+    "pyright>=1.1.407",
+    "ty>=0.0.1a26",
+]
+
 [project.entry-points."mjlab.tasks"]
   g1_spinkick = "spinkick_example"

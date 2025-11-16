@@ -1,13 +1,12 @@
+"""Spinkick environment configuration for Unitree G1."""
+
 import math
-from dataclasses import dataclass, field
 
 import torch
 from mjlab.entity import Entity
-from mjlab.envs import ManagerBasedRlEnv
-from mjlab.managers.manager_term_config import TerminationTermCfg as DoneTerm
-from mjlab.managers.manager_term_config import term
-from mjlab.tasks.tracking.config.g1.flat_env_cfg import G1FlatNoStateEstimationEnvCfg
-from mjlab.tasks.tracking.tracking_env_cfg import TerminationsCfg
+from mjlab.envs import ManagerBasedRlEnv, ManagerBasedRlEnvCfg
+from mjlab.managers.manager_term_config import TerminationTermCfg
+from mjlab.tasks.tracking.config.g1.env_cfgs import unitree_g1_flat_tracking_env_cfg
 
 _MAX_ANG_VEL = 500 * math.pi / 180.0  # [rad/s]
 
@@ -21,39 +20,26 @@ def base_ang_vel_exceed(
   return torch.any(ang_vel.abs() > threshold, dim=-1)
 
 
-@dataclass
-class SpinkickTerminationsCfg(TerminationsCfg):
-  base_ang_vel_exceed: DoneTerm = term(
-    DoneTerm,
-    func=base_ang_vel_exceed,
-    params={"threshold": _MAX_ANG_VEL},
+def unitree_g1_spinkick_env_cfg(play: bool = False) -> ManagerBasedRlEnvCfg:
+  """Create Unitree G1 spinkick environment configuration."""
+  # Start with the base tracking environment without state estimation.
+  cfg = unitree_g1_flat_tracking_env_cfg(has_state_estimation=False, play=play)
+
+  # Add custom spinkick termination.
+  cfg.terminations["base_ang_vel_exceed"] = TerminationTermCfg(
+    func=base_ang_vel_exceed, params={"threshold": _MAX_ANG_VEL}
   )
 
+  # Customize rewards.
+  cfg.rewards["joint_limit"].weight = -100.0
 
-@dataclass
-class G1SpinkickCfg(G1FlatNoStateEstimationEnvCfg):
-  terminations: SpinkickTerminationsCfg = field(default_factory=SpinkickTerminationsCfg)
-
-  def __post_init__(self):
-    super().__post_init__()
-
-    self.rewards.joint_limit.weight = -100.0
+  return cfg
 
 
-@dataclass
-class G1SpinkickCfg_PLAY(G1SpinkickCfg):
-  def __post_init__(self):
-    super().__post_init__()
+def unitree_g1_spinkick_runner_cfg():
+  """Create RL runner configuration for Unitree G1 spinkick task."""
+  from mjlab.tasks.tracking.config.g1.rl_cfg import unitree_g1_tracking_ppo_runner_cfg
 
-    self.observations.policy.enable_corruption = False
-    self.events.push_robot = None
-
-    # Disable RSI randomization.
-    self.commands.motion.pose_range = {}
-    self.commands.motion.velocity_range = {}
-
-    # Disable adaptive sampling to play through motion from start to finish.
-    self.commands.motion.sampling_mode = "start"
-
-    # Effectively infinite episode length.
-    self.episode_length_s = int(1e9)
+  cfg = unitree_g1_tracking_ppo_runner_cfg()
+  cfg.experiment_name = "g1_spinkick"
+  return cfg
