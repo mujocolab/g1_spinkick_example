@@ -30,9 +30,6 @@ def unitree_g1_spinkick_env_cfg(play: bool = False) -> ManagerBasedRlEnvCfg:
     func=base_ang_vel_exceed, params={"threshold": _MAX_ANG_VEL}
   )
 
-  # Customize rewards.
-  cfg.rewards["joint_limit"].weight = -100.0
-
   return cfg
 
 
