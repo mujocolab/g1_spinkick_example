@@ -52,7 +52,7 @@ MUJOCO_GL=egl uv run -m mjlab.scripts.csv_to_npz \
     --output-name mimickit_spinkick_safe \
     --input-fps 60 \
     --output-fps 50 \
-    --render
+    --render True
 ```
 
 This will upload the motion to your wandb registry and create a video showing
